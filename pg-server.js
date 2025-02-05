@@ -14,7 +14,10 @@ const postgresConfig = {
     user: process.env.USER,
     password: process.env.PASS,
     database: 'notes_scolaire',
-    port: 5432
+    port: 5432,
+    ssl: {
+        rejectUnauthorized: false
+    }
 };
 
 const db = new Pool(postgresConfig);
