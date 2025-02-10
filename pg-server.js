@@ -202,6 +202,34 @@ app.put('/api/notes', authenticateToken, async (req, res) => {
     }
 });
 
+// Route pour ajouter des notes en masse
+app.post('/api/notes/bulk', authenticateToken, async (req, res) => {
+    const notes = req.body;
+
+    const client = await db.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        for (const note of notes) {
+            const { eleve, matiere, note_classe, note_devoir, note_compo } = note;
+            await client.query(
+                'INSERT INTO notes (student_id, matiere_id, note_classe, note_devoir, note_compo) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (student_id, matiere_id) DO UPDATE SET note_classe = EXCLUDED.note_classe, note_devoir = EXCLUDED.note_devoir, note_compo = EXCLUDED.note_compo',
+                [eleve, matiere, note_classe, note_devoir, note_compo]
+            );
+        }
+
+        await client.query('COMMIT');
+        res.status(201).json({ message: 'Notes ajoutées avec succès' });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erreur lors de l\'ajout des notes en masse:', error);
+        res.status(500).json({ message: 'Erreur lors de l\'ajout des notes en masse' });
+    } finally {
+        client.release();
+    }
+});
+
 const PORT = 5001;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Serveur démarré sur le port ${PORT}`);
