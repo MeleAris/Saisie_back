@@ -13,7 +13,7 @@ const postgresConfig = {
     host: process.env.DB_HOST,
     user: process.env.USER,
     password: process.env.PASS,
-    database: 'notes_scolaire',
+    database: 'notes_scolaire_idy6',
     port: 5432,
     ssl: {
         rejectUnauthorized: false
