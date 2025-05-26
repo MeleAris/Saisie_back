@@ -165,6 +165,19 @@ app.get('/api/notes/:id', authenticateToken, async (req, res) => {
     }
 });
 
+//Pour récupérer toutes les notes
+app.get('/api/notes', authenticateToken, async (req, res) => {
+    try {
+        const { rows } = await db.query(
+            'SELECT * FROM notes'
+        );
+        res.json(rows);
+    } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+        res.status(500).json({ message: 'Erreur lors de la récupération des données' });
+    }
+});
+
 // Route pour ajouter une note
 app.post('/api/notes', authenticateToken, async (req, res) => {
     const { eleve, matiere, note_classe, note_devoir, note_compo } = req.body;
