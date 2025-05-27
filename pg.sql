@@ -4,7 +4,8 @@ CREATE TABLE teachers (
     login VARCHAR(50) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     nom_complet VARCHAR(100),
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    role VARCHAR(50) NOT NULL
 );
 CREATE TABLE matiere (
     id SERIAL PRIMARY KEY,
@@ -40,17 +41,21 @@ CREATE TABLE notes (
     date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (student_id, matiere_id)
 );
-
 -- Ajouter les nouvelles colonnes
 ALTER TABLE notes
 ADD COLUMN note_classe NUMERIC(4, 2) CHECK (note_classe <= 20.00),
-ADD COLUMN note_devoir NUMERIC(4, 2) CHECK (note_devoir <= 20.00),
-ADD COLUMN note_compo NUMERIC(4, 2) CHECK (note_compo <= 20.00);
-
+    ADD COLUMN note_devoir NUMERIC(4, 2) CHECK (note_devoir <= 20.00),
+    ADD COLUMN note_compo NUMERIC(4, 2) CHECK (note_compo <= 20.00);
 -- Supprimer l'ancienne colonne
-ALTER TABLE notes
-DROP COLUMN note;
-
+ALTER TABLE notes DROP COLUMN note;
 -- Ajouter la contrainte d'unicité sur les colonnes student_id et matiere_id
 ALTER TABLE notes
 ADD CONSTRAINT unique_student_matiere UNIQUE (student_id, matiere_id);
+-- Modifications pour ajouter la colonne role dans la table teachers
+ALTER TABLE teachers
+ADD COLUMN role VARCHAR(50);
+UPDATE teachers
+SET role = 'teacher';
+ALTER TABLE teachers
+ALTER COLUMN role
+SET NOT NULL;

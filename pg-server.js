@@ -93,7 +93,8 @@ app.post('/api/login', async (req, res) => {
             teacher: {
                 id: teacher.id,
                 login: teacher.login,
-                nom_complet: teacher.nom_complet
+                nom_complet: teacher.nom_complet,
+                role: teacher.role
             }
         });
     } catch (error) {
